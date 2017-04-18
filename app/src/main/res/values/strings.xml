@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BluetoothLEDemo</string>
+
+    <string name="text_device">[Devices]</string>
+    <string name="button_scan">Scan for Devices...</string>
+    <string name="button_scan_stop"> Stop Scan... </string>
+</resources>
