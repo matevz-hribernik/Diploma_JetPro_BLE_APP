@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 18
+    compileSdkVersion 25
     buildToolsVersion '25.0.0'
 
     defaultConfig {
@@ -26,4 +26,5 @@ dependencies {
     compile 'com.reconinstruments.app:recon-application:4.3.1'
     compile 'com.reconinstruments.ui:recon-ui:4.3.1'
     provided 'com.reconinstruments.os:recon-platform:4.3.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
 }

@@ -16,13 +16,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.view.View;
+import com.reconinstruments.ui.carousel.CarouselActivity;
+import com.reconinstruments.ui.carousel.CarouselItem;
+import com.reconinstruments.ui.breadcrumb.BreadcrumbToast;
+import com.reconinstruments.ui.carousel.CarouselPagerViewAdapter;
+//import com.reconinstruments.bluetoothledemo.R;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 
 @SuppressLint("NewApi")
-public class BLEActivity extends Activity
+public class BLEActivity extends CarouselActivity
 {
     private final static String TAG = "BluetoothLETest";
 
@@ -36,16 +47,96 @@ public class BLEActivity extends Activity
 
     private String leDeviceName;
     private String leDeviceAddress;
+    private String[] fullPacket;
+    private int k = 100; //količnik množinski
+
+    public static Map<String, Double> Variables = new HashMap<String, Double>();
 
     public static UUID UART_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
     public static UUID TX_UUID   = UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E");
     public static UUID RX_UUID   = UUID.fromString("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");
 
+    static class ListItem extends CarouselItem {
+        String value;
+        String unit;
+        String type;
+        TextView typeText;
+        public ListItem(String value,String unit,String type){
+            this.value = value;
+            this.unit = unit;
+            this.type = type;
+        }
+        @Override
+        public int getLayoutId() {
+                return R.layout.carousel_item_stat;
+        }
+        @Override
+        public void updateView(View view) {
+
+            TextView valueText = (TextView) view.findViewById(R.id.value);
+            TextView unitText = (TextView) view.findViewById(R.id.unit);
+            Double value_text = Variables.containsKey(value) ? Variables.get(value) : 0;
+            valueText.setText(Double.toString(value_text));
+            unitText.setText(unit);
+            typeText = (TextView) view.findViewById(R.id.type);
+            typeText.setText(type);
+        }
+        @Override
+        public void updateViewForPosition(View view,POSITION position) {
+            if(position==POSITION.CENTER) {
+                typeText.setVisibility(View.VISIBLE);
+            }else{
+                typeText.setVisibility(View.GONE);
+            }
+        }
+    }
+    static class ListItem2 extends CarouselItem {
+        TextView typeText;
+
+        public ListItem2(){
+            //empty constructor
+        }
+        @Override
+        public int getLayoutId() {
+                return R.layout.carousel_item_graphic_stat;
+        }
+        @Override
+        public void updateView(View view) {
+            SeekBar os_x = (SeekBar) view.findViewById(R.id.os_x);
+            SeekBar os_y = (SeekBar) view.findViewById(R.id.os_y);
+            Double value_os_x = Variables.containsKey("A_X") ? Variables.get("A_X")*100 : 0;
+            Double value_os_y = Variables.containsKey("A_Y") ? Variables.get("A_Y")*100 : 0;
+            os_x.setProgress(value_os_x.intValue()+200);
+            os_y.setProgress(value_os_y.intValue()+200);
+            typeText = (TextView) view.findViewById(R.id.type);
+            typeText.setText("");
+        }
+        @Override
+        public void updateViewForPosition(View view,POSITION position) {
+                typeText.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        //super.onCreate(savedInstanceState);
+        //setContentView(R.layout.device_main);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.device_main);
+        setContentView(R.layout.carousel_host_stat);
+
+        TextView title = (TextView)findViewById(R.id.title);
+        title.setText("BLE Connect App");
+        Variables.put("A_X", 0.1);
+        Variables.put("A_Y", 0.1);
+        Variables.put("A_Z", 0.1);
+
+        getCarousel().setContents(
+                new ListItem("A_X", "G", "Os X"),
+                new ListItem("A_Y", "G", "Os Y"),
+                new ListItem("A_Z", "G", "Os Z"),
+                new ListItem2()
+                );
     }
 
     @Override
@@ -58,14 +149,14 @@ public class BLEActivity extends Activity
         leDeviceName = intent.getStringExtra("name");
         leDeviceAddress = intent.getStringExtra("address");
 
-        leNameText = (TextView) findViewById(R.id.leNameText);
-        leAddressText = (TextView) findViewById(R.id.leAddressText);
+        //leNameText = (TextView) findViewById(R.id.leNameText);
+        //leAddressText = (TextView) findViewById(R.id.leAddressText);
 
-        leStatusText = (TextView) findViewById(R.id.leStatusText);
-        leStatusText.setText("- Connecting -");
+        //leStatusText = (TextView) findViewById(R.id.leStatusText);
+        //leStatusText.setText("- Connecting -");
 
-        leNameText.setText(leDeviceName);
-        leAddressText.setText(leDeviceAddress);
+        //leNameText.setText(leDeviceName);
+        //leAddressText.setText(leDeviceAddress);
 
         // Attempt BLE Connection
         mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
@@ -148,8 +239,33 @@ public class BLEActivity extends Activity
                 Log.i(TAG, "onCharacteristicChanged is available.");
                 byte[] bytes = characteristic.getValue();
                 String packet = new String(bytes);
-                String[] packet_split = packet.split("//");
-                broadcastMessage(packet_split[1]+"  "+packet_split[2]);
+                //String[] fullPacket = new String[5];
+                Log.i(TAG, "Packet Send:"+packet);
+                if (packet.contains("A/") && packet.contains("/Z")){
+                    fullPacket = packet.split("/");
+                    Log.i(TAG, "Packet Splited");
+                    if (fullPacket[0].equals("A")==false){
+                        runOnUiThread(new Runnable(){
+                            public void run(){
+                                TextView title = (TextView)findViewById(R.id.title);
+                                title.setText("ERORR reset BLE board");
+                            }
+                        });
+                        Log.i(TAG, "ERROR SET");
+                    }
+                }
+                //Log.i(TAG, "PacketToBeAssembled:"+fullPacket);
+                //fullPacket = fullPacket+packet_split2[1];
+                //Log.i(TAG, fullPacket);
+                Variables.clear();
+                Variables.put("A_X", Double.parseDouble(fullPacket[1].replace(" ",""))/k);
+                Variables.put("A_Y", Double.parseDouble(fullPacket[2].replace(" ",""))/k);
+                Variables.put("A_Z", Double.parseDouble(fullPacket[3].replace(" ",""))/k);
+                runOnUiThread(new Runnable(){
+                  public void run(){
+                     getCarousel().getCurrentCarouselItem().updateView(getCarousel().getCurrentView());
+                     }
+                });
         }
     };
 
@@ -165,7 +281,7 @@ public class BLEActivity extends Activity
         public void handleMessage(Message msg)
         {
             super.handleMessage(msg);
-            leStatusText.setText((String) msg.obj);
+            //leStatusText.setText((String) msg.obj);
         }
     };
 }
