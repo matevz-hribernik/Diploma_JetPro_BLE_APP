@@ -105,9 +105,9 @@ public class BLEActivity extends CarouselActivity
         public void updateView(View view) {
             SeekBar os_x = (SeekBar) view.findViewById(R.id.os_x);
             SeekBar os_y = (SeekBar) view.findViewById(R.id.os_y);
-            Double value_os_x = Variables.containsKey("A_X") ? Variables.get("A_X")*100 : 0;
+            Double value_os_z = Variables.containsKey("A_X") ? Variables.get("A_X")*100 : 0;
             Double value_os_y = Variables.containsKey("A_Y") ? Variables.get("A_Y")*100 : 0;
-            os_x.setProgress(value_os_x.intValue()+200);
+            os_x.setProgress(value_os_z.intValue()+200);
             os_y.setProgress(value_os_y.intValue()+200);
         }
         @Override
@@ -127,64 +127,54 @@ public class BLEActivity extends CarouselActivity
         }
         @Override
         public void updateView(View view) {
-            // os x naprej nazaj
+            // os z naprej nazaj
             //os y side to side
             ImageView straight = (ImageView) view.findViewById(R.id.straight);
             ImageView side = (ImageView) view.findViewById(R.id.side);
-            Double value_os_x = Variables.containsKey("A_X") ? Variables.get("A_X")*100 : 0;
-            Double value_os_y = Variables.containsKey("A_Y") ? Variables.get("A_Y")*100 : 0;
+            Double value_os_z = Variables.containsKey("A_Z") ? Variables.get("A_Z") : 0;
+            Double value_os_y = Variables.containsKey("A_Y") ? Variables.get("A_Y") : 0;
 
-            if (value_os_x >= 0.4){
-                straight.setImageResource(R.mipmap.drza_side_4);
-            }
-            else if (value_os_x >= 0.3 && value_os_x < 0.2){
-                straight.setImageResource(R.mipmap.drza_side_3);
-            }
-            else if (value_os_x >= 0.2 && value_os_x < 0.1){
-                straight.setImageResource(R.mipmap.drza_side_2);
-            }
-            else if (value_os_x >= 0.1 && value_os_x < 0.05){
-                straight.setImageResource(R.mipmap.drza_side_1);
-            }
-            else if (value_os_x >= 0.05 && value_os_x < -0.05){
-                straight.setImageResource(R.mipmap.drza_side_0);
-            }
-            else if (value_os_x >= -0.05 && value_os_x < -0.1){
-                straight.setImageResource(R.mipmap.drza_side__1);
-            }
-            else if (value_os_x >= -0.1 && value_os_x < -0.2){
-                straight.setImageResource(R.mipmap.drza_side__2);
-            }
-            else if (value_os_x >= -0.2 && value_os_x < -0.3){
+            Log.i(TAG, "A_Z:"+value_os_z);
+            Log.i(TAG, "A_Y:"+value_os_y);
+
+            if (value_os_z >= 0.3){
                 straight.setImageResource(R.mipmap.drza_side__3);
+            } else if (value_os_z >= 0.2 && value_os_z < 0.3){
+                straight.setImageResource(R.mipmap.drza_side__3);
+            } else if (value_os_z >= 0.1 && value_os_z < 0.2){
+                straight.setImageResource(R.mipmap.drza_side__2);
+            } else if (value_os_z >= 0.05 && value_os_z < 0.1){
+                straight.setImageResource(R.mipmap.drza_side__1);
+            } else if (value_os_z >= -0.05 && value_os_z < 0.05){
+                straight.setImageResource(R.mipmap.drza_side_0);
+            } else if (value_os_z >= -0.1 && value_os_z < -0.05){
+                straight.setImageResource(R.mipmap.drza_side_1);
+            } else if (value_os_z >= -0.3 && value_os_z < -0.1){
+                straight.setImageResource(R.mipmap.drza_side_2);
+            } else if (value_os_z >= -0.4 && value_os_z < -0.3){
+                straight.setImageResource(R.mipmap.drza_side_3);
+            } else if (value_os_z >= -0.9 && value_os_z < -0.4) {
+                straight.setImageResource(R.mipmap.drza_side_4);
             }
 
             if (value_os_y >= 0.4){
                 side.setImageResource(R.mipmap.drza_straight_4);
-            }
-            else if (value_os_y >= 0.3 && value_os_y < 0.2){
+            } else if (value_os_y >= 0.3 && value_os_y < 0.4){
                 side.setImageResource(R.mipmap.drza_straight_3);
-            }
-            else if (value_os_y >= 0.2 && value_os_y < 0.1){
+            } else if (value_os_y >= 0.2 && value_os_y < 0.3){
                 side.setImageResource(R.mipmap.drza_straight_2);
-            }
-            else if (value_os_y >= 0.1 && value_os_y < 0.05){
+            } else if (value_os_y >= 0.1 && value_os_y < 0.2){
                 side.setImageResource(R.mipmap.drza_straight_1);
-            }
-            else if (value_os_y >= 0.05 && value_os_y < -0.05){
+            } else if (value_os_y >= -0.1 && value_os_y < 0.1){
                 side.setImageResource(R.mipmap.drza_straight_0);
-            }
-            else if (value_os_y >= -0.05 && value_os_y < -0.1){
+            } else if (value_os_y >= -0.2 && value_os_y < -0.1){
                 side.setImageResource(R.mipmap.drza_straight__1);
-            }
-            else if (value_os_y >= -0.1 && value_os_y < -0.2){
+            } else if (value_os_y >= -0.3 && value_os_y < -0.2){
                 side.setImageResource(R.mipmap.drza_straight__2);
-            }
-            else if (value_os_y >= -0.2 && value_os_y < -0.3){
+            } else if (value_os_y >= -0.4 && value_os_y < -0.3){
                 side.setImageResource(R.mipmap.drza_straight__3);
-            }
-            else if (value_os_y >= -0.3 && value_os_y < -0.4){
-                side.setImageResource(R.mipmap.drza_straight__3);
+            } else if (value_os_y >= -0.6 && value_os_y < -0.4){
+                side.setImageResource(R.mipmap.drza_straight__4);
             }
 
         }
