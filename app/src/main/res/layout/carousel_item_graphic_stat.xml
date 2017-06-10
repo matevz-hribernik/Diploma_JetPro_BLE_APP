@@ -29,16 +29,4 @@
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="false" />
 
-    <TextView
-        android:id="@+id/type"
-        style="@style/recon_jet_text_secondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/os_x"
-        android:layout_alignParentTop="true"
-        android:layout_weight="0.54"
-        android:gravity="center"
-        android:textSize="20px"
-        tools:text="DISTANCE" />
-
 </RelativeLayout>

@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.graphics.Rect;
@@ -91,7 +92,7 @@ public class BLEActivity extends CarouselActivity
         }
     }
     static class ListItem2 extends CarouselItem {
-        TextView typeText;
+
 
         public ListItem2(){
             //empty constructor
@@ -108,12 +109,88 @@ public class BLEActivity extends CarouselActivity
             Double value_os_y = Variables.containsKey("A_Y") ? Variables.get("A_Y")*100 : 0;
             os_x.setProgress(value_os_x.intValue()+200);
             os_y.setProgress(value_os_y.intValue()+200);
-            typeText = (TextView) view.findViewById(R.id.type);
-            typeText.setText("");
         }
         @Override
         public void updateViewForPosition(View view,POSITION position) {
-                typeText.setVisibility(View.GONE);
+
+        }
+    }
+    static class ListItem_Posture extends CarouselItem {
+
+
+        public ListItem_Posture(){
+            //empty constructor
+        }
+        @Override
+        public int getLayoutId() {
+            return R.layout.carousel_item_images_posture;
+        }
+        @Override
+        public void updateView(View view) {
+            // os x naprej nazaj
+            //os y side to side
+            ImageView straight = (ImageView) view.findViewById(R.id.straight);
+            ImageView side = (ImageView) view.findViewById(R.id.side);
+            Double value_os_x = Variables.containsKey("A_X") ? Variables.get("A_X")*100 : 0;
+            Double value_os_y = Variables.containsKey("A_Y") ? Variables.get("A_Y")*100 : 0;
+
+            if (value_os_x >= 0.4){
+                straight.setImageResource(R.mipmap.drza_side_4);
+            }
+            else if (value_os_x >= 0.3 && value_os_x < 0.2){
+                straight.setImageResource(R.mipmap.drza_side_3);
+            }
+            else if (value_os_x >= 0.2 && value_os_x < 0.1){
+                straight.setImageResource(R.mipmap.drza_side_2);
+            }
+            else if (value_os_x >= 0.1 && value_os_x < 0.05){
+                straight.setImageResource(R.mipmap.drza_side_1);
+            }
+            else if (value_os_x >= 0.05 && value_os_x < -0.05){
+                straight.setImageResource(R.mipmap.drza_side_0);
+            }
+            else if (value_os_x >= -0.05 && value_os_x < -0.1){
+                straight.setImageResource(R.mipmap.drza_side__1);
+            }
+            else if (value_os_x >= -0.1 && value_os_x < -0.2){
+                straight.setImageResource(R.mipmap.drza_side__2);
+            }
+            else if (value_os_x >= -0.2 && value_os_x < -0.3){
+                straight.setImageResource(R.mipmap.drza_side__3);
+            }
+
+            if (value_os_y >= 0.4){
+                side.setImageResource(R.mipmap.drza_straight_4);
+            }
+            else if (value_os_y >= 0.3 && value_os_y < 0.2){
+                side.setImageResource(R.mipmap.drza_straight_3);
+            }
+            else if (value_os_y >= 0.2 && value_os_y < 0.1){
+                side.setImageResource(R.mipmap.drza_straight_2);
+            }
+            else if (value_os_y >= 0.1 && value_os_y < 0.05){
+                side.setImageResource(R.mipmap.drza_straight_1);
+            }
+            else if (value_os_y >= 0.05 && value_os_y < -0.05){
+                side.setImageResource(R.mipmap.drza_straight_0);
+            }
+            else if (value_os_y >= -0.05 && value_os_y < -0.1){
+                side.setImageResource(R.mipmap.drza_straight__1);
+            }
+            else if (value_os_y >= -0.1 && value_os_y < -0.2){
+                side.setImageResource(R.mipmap.drza_straight__2);
+            }
+            else if (value_os_y >= -0.2 && value_os_y < -0.3){
+                side.setImageResource(R.mipmap.drza_straight__3);
+            }
+            else if (value_os_y >= -0.3 && value_os_y < -0.4){
+                side.setImageResource(R.mipmap.drza_straight__3);
+            }
+
+        }
+        @Override
+        public void updateViewForPosition(View view,POSITION position) {
+
         }
     }
 
@@ -135,7 +212,7 @@ public class BLEActivity extends CarouselActivity
                 new ListItem("A_X", "G", "Os X"),
                 new ListItem("A_Y", "G", "Os Y"),
                 new ListItem("A_Z", "G", "Os Z"),
-                new ListItem2()
+                new ListItem_Posture()
                 );
     }
 
